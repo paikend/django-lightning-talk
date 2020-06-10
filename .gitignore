@@ -1,0 +1,3 @@
+v_py38/
+__pycache__
+db.sqlite3
