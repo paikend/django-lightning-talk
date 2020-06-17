@@ -1,8 +1,15 @@
-from django.http import JsonResponse
-from config.tasks import task_register, hello_django
-import random 
+from django.http import HttpResponse
+from config.tasks import task_register
+import json
 
 def test_view(request):
-  task_name = "hello_django" + str(random.random()*100)
-  task_register.delay(str(q.video.title)+str(datetime.now()), 'config.tasks.hello_django', args_list, month, day, hour, minute)
-  return JsonResponse({"key": "value"})
+  name =  request.GET.get('name', 'django')
+  task_name = "hello"
+  task_func = 'config.tasks.hello_django'
+  kwargs = json.dumps({"name" : name})
+  month = "*"
+  day = "*"
+  hour = "*"
+  minute = "*"
+  task_register.delay(task_name, task_func, kwargs, month, day, hour, minute)
+  return HttpResponse("Hello "+name, status=200)
