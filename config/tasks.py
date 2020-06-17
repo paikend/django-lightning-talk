@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from pytz import timezone
 from dateutil.relativedelta import relativedelta
 from celery import shared_task
 from django_celery_beat.models import PeriodicTask, CrontabSchedule
@@ -24,5 +25,5 @@ def task_register(task_name, task_func, args, month, day, hour, minute):
     task=task_dunc,
     kwargs=args,
     #1 month after discard task
-    expires= datetime.now() + relativedelta(months=1),
+    expires= datetime.now(timezone('Asia/Seoul')) + relativedelta(months=1),
     )
