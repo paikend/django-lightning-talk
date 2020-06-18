@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from config.views import test_view
+from config.views import hello_crontab_view, hello_clocked_view, hello_interval_view, hello_solar_view
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', test_view ),
+    path('crontab/', hello_crontab_view),
+    path('clocked/', hello_clocked_view),
+    path('interval/', hello_interval_view),
+    path('solar/', hello_solar_view),
 ]
