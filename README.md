@@ -148,7 +148,13 @@ vine==1.3.0
         verbose_name=_('Interval Period'),
         help_text=_('The type of period between task runs (Example: days)'),
     )
+## period 종류 
 
+1. IntervalSchedule.DAYS  
+2. IntervalSchedule.HOURS  
+3. IntervalSchedule.MINUTES  
+4. IntervalSchedule.SECONDS  
+5. IntervalSchedule.MICROSECONDS  
  ## django_celery_beat_periodictask
 
     Priodic_task의 모델이자 옵션입니다. 

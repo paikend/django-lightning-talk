@@ -3,7 +3,9 @@ from config.tasks import \
   crontab_task_register, clocked_task_register, \
   solar_task_register, interval_task_register
 import json
-
+from datetime import datetime
+from pytz import timezone
+from dateutil.relativedelta import relativedelta
 # example api 
 def hello_crontab_view(request):  
   """
@@ -24,7 +26,6 @@ def hello_crontab_view(request):
   crontab_task_register.delay(task_name, task_func, kwargs, month, day, hour, minute)
   return HttpResponse("Hello "+name, status=200)
 
-
 def hello_clocked_view(request):
   """
   clocked task view
@@ -33,7 +34,9 @@ def hello_clocked_view(request):
   task_func = request.GET.get('task_func', 'config.tasks.hello_django')
   name =  request.GET.get('name', 'clocked_django')
   kwargs = json.dumps({"name" : name})
-  clocked_task_register.delay(task_name, task_func, kwargs)
+  date = datetime.now(timezone('Asia/Seoul')) + relativedelta(minutes=1)
+
+  clocked_task_register.delay(task_name, task_func, kwargs, date)
   return HttpResponse("Hello "+name, status=200)
 
 def hello_interval_view(request):
@@ -42,10 +45,10 @@ def hello_interval_view(request):
   """
   task_name = request.GET.get('task_name', 'hello')
   task_func = request.GET.get('task_func', 'config.tasks.hello_django')
-  name =  request.GET.get('name', 'clocked_django')
+  name =  request.GET.get('name', 'interval_django')
   kwargs = json.dumps({"name" : name})
-  interval_task_register.delay(task_name, task_func, kwargs)
-  return HttpResponse("Hello "+name, status=200)
+  interval_task_register.delay(task_name, task_func, kwargs, every = 3, period = "days")
+  return HttpResponse("Hello "+name, status=200 )
 
 def hello_solar_view(request):
   """
@@ -55,7 +58,7 @@ def hello_solar_view(request):
   """
   task_name = request.GET.get('task_name', 'hello')
   task_func = request.GET.get('task_func', 'config.tasks.hello_django')
-  name =  request.GET.get('name', 'clocked_django')
+  name =  request.GET.get('name', 'solar_django')
   kwargs = json.dumps({"name" : name})
-  solar_task_register.delay(task_name, task_func, kwargs, event = "sunset", latitude=37.498837, longtitude=127.034077 )
+  solar_task_register.delay(task_name, task_func, kwargs, event = "sunset", latitude=37.498837, longitude=127.034077 )
   return HttpResponse("Hello "+name, status=200)

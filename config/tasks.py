@@ -3,7 +3,7 @@ from datetime import datetime
 from pytz import timezone
 from dateutil.relativedelta import relativedelta
 from celery import shared_task
-from django_celery_beat.models import PeriodicTask, CrontabSchedule, IntervalSchedule, SolarSchedule
+from django_celery_beat.models import PeriodicTask, CrontabSchedule, IntervalSchedule, SolarSchedule, ClockedSchedule
 # 업무 로직
 @shared_task
 def hello_django(name):
@@ -29,23 +29,23 @@ def crontab_task_register(task_name, task_func, kwargs, month, day, hour, minute
     )
 
 @shared_task
-def clocked_task_register(task_name, task_func, kwargs):
+def clocked_task_register(task_name, task_func, kwargs, date):
     """수행 로직을 clocked에 등록하는 로직"""
-    date = datetime.now(timezone('Asia/Seoul')) + relativedelta(minutes=1)
-    schedule, _ = ClockedSchedule.objects.create(clock_time = date)
+    schedule, _ = ClockedSchedule.objects.get_or_create(clocked_time = date)
     PeriodicTask.objects.create(
     clocked = schedule,
     name = task_name + str(datetime.now(timezone('Asia/Seoul'))),
+    one_off=True,
     task = task_func,
     kwargs = kwargs,
     )
 
 @shared_task
-def interval_task_register(task_name, task_func, kwargs):
+def interval_task_register(task_name, task_func, kwargs, every, period):
     """수행 로직을 interval에 등록하는 로직"""
-    schedule, _ = IntervalSchedule.objects.create(
-        every = 5,
-        period = "days",
+    schedule, _ = IntervalSchedule.objects.get_or_create(
+        every = every,
+        period = period,
         )
     PeriodicTask.objects.create(
     interval = schedule,
@@ -55,12 +55,12 @@ def interval_task_register(task_name, task_func, kwargs):
     )
 
 @shared_task
-def solar_task_register(task_name, task_func, kwargs, event = None, latitude = None, longtitude= None ):
+def solar_task_register(task_name, task_func, kwargs, event, latitude, longitude):
     """수행 로직을 solar에 등록하는 로직"""
-    schedule, _ = SolarSchedule.objects.create(
+    schedule, _ = SolarSchedule.objects.get_or_create(
         event = event,
         latitude = latitude,
-        longtitude = longtitude,
+        longitude = longitude,
         )
     PeriodicTask.objects.create(
     solar = schedule,
