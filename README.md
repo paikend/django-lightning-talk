@@ -343,7 +343,7 @@ vine==1.3.0
 
 ![300px-Twilight_description_full_day.svg](./asset/300px-Twilight_description_full_day.svg.png) 
 
-- sunset : 일몰, solar_noon : 낮 12시, sunrise : 일출 
+- sunset : 일몰, solar_noon : 정오(태양의 고도 = 90°), sunrise : 일출 
 
 
 ![300px-Twilight-dawn_subcategories.svg](./asset/300px-Twilight-dawn_subcategories.svg.png)
