@@ -71,7 +71,10 @@ vine==1.3.0
  ## django_celery_beat_clockedschedule
 
     일회성 작업은 clocked schedule을 쓰면 더 편할 것 같아요!.
-    
+    Periodic_task에 등록할 때
+    one_off=True 옵션을 꼭 줘야합니다!
+    주지 않으면 assign 에러가 납니다.
+
     clocked_time = models.DateTimeField(
         verbose_name=_('Clock Time'),
         help_text=_('Run the task at clocked time'),
@@ -85,78 +88,6 @@ vine==1.3.0
 
 
 ## django_celery_beat_crontabschedule
-
-    crontabSchedule의 옵션이자 데이터베이스 모델입니다. 고정 시간으로 스케줄링합니다.
-    ex) 
-    
-    minute = models.CharField(
-        max_length=60 * 4, default='*',
-        verbose_name=_('Minute(s)'),
-        help_text=_(
-            'Cron Minutes to Run. Use "*" for "all". (Example: "0,30")'),
-        validators=[validators.minute_validator],
-    )
-    hour = models.CharField(
-        max_length=24 * 4, default='*',
-        verbose_name=_('Hour(s)'),
-        help_text=_(
-            'Cron Hours to Run. Use "*" for "all". (Example: "8,20")'),
-        validators=[validators.hour_validator],
-    )
-    day_of_week = models.CharField(
-        max_length=64, default='*',
-        verbose_name=_('Day(s) Of The Week'),
-        help_text=_(
-            'Cron Days Of The Week to Run. Use "*" for "all". '
-            '(Example: "0,5")'),
-        validators=[validators.day_of_week_validator],
-    )
-    day_of_month = models.CharField(
-        max_length=31 * 4, default='*',
-        verbose_name=_('Day(s) Of The Month'),
-        help_text=_(
-            'Cron Days Of The Month to Run. Use "*" for "all". '
-            '(Example: "1,15")'),
-        validators=[validators.day_of_month_validator],
-    )
-    month_of_year = models.CharField(
-        max_length=64, default='*',
-        verbose_name=_('Month(s) Of The Year'),
-        help_text=_(
-            'Cron Months Of The Year to Run. Use "*" for "all". '
-            '(Example: "0,6")'),
-        validators=[validators.month_of_year_validator],
-    )
-    
-    timezone = timezone_field.TimeZoneField(
-        default='UTC',
-        verbose_name=_('Cron Timezone'),
-        help_text=_(
-            'Timezone to Run the Cron Schedule on.  Default is UTC.'),
-    )
-
- ## django_celery_beat_intervalschedule
-    intervalschedule의 옵션이자 데이터베이스 모델입니다.상대 시간으로 스케줄링합니다. 
-    
-    every = models.IntegerField(
-        null=False,
-        verbose_name=_('Number of Periods'),
-        help_text=_('Number of interval periods to wait before '
-                    'running the task again'),
-        validators=[MinValueValidator(1)],
-    )
-    period = models.CharField(
-        max_length=24, choices=PERIOD_CHOICES,
-        verbose_name=_('Interval Period'),
-        help_text=_('The type of period between task runs (Example: days)'),
-    )
-## period 종류 
-
-1. IntervalSchedule.DAYS  
-2. IntervalSchedule.HOURS  
-3. IntervalSchedule.MINUTES  
-4. IntervalSchedule.SECONDS  
-5. IntervalSchedule.MICROSECONDS  
  ## django_celery_beat_periodictask
 
     Priodic_task의 모델이자 옵션입니다. 
@@ -315,6 +246,78 @@ vine==1.3.0
     
     ident = models.SmallIntegerField(default=1, primary_key=True, unique=True)
     last_update = models.DateTimeField(null=False)
+
+    crontabSchedule의 옵션이자 데이터베이스 모델입니다. 고정 시간으로 스케줄링합니다.
+    ex) 
+    
+    minute = models.CharField(
+        max_length=60 * 4, default='*',
+        verbose_name=_('Minute(s)'),
+        help_text=_(
+            'Cron Minutes to Run. Use "*" for "all". (Example: "0,30")'),
+        validators=[validators.minute_validator],
+    )
+    hour = models.CharField(
+        max_length=24 * 4, default='*',
+        verbose_name=_('Hour(s)'),
+        help_text=_(
+            'Cron Hours to Run. Use "*" for "all". (Example: "8,20")'),
+        validators=[validators.hour_validator],
+    )
+    day_of_week = models.CharField(
+        max_length=64, default='*',
+        verbose_name=_('Day(s) Of The Week'),
+        help_text=_(
+            'Cron Days Of The Week to Run. Use "*" for "all". '
+            '(Example: "0,5")'),
+        validators=[validators.day_of_week_validator],
+    )
+    day_of_month = models.CharField(
+        max_length=31 * 4, default='*',
+        verbose_name=_('Day(s) Of The Month'),
+        help_text=_(
+            'Cron Days Of The Month to Run. Use "*" for "all". '
+            '(Example: "1,15")'),
+        validators=[validators.day_of_month_validator],
+    )
+    month_of_year = models.CharField(
+        max_length=64, default='*',
+        verbose_name=_('Month(s) Of The Year'),
+        help_text=_(
+            'Cron Months Of The Year to Run. Use "*" for "all". '
+            '(Example: "0,6")'),
+        validators=[validators.month_of_year_validator],
+    )
+    
+    timezone = timezone_field.TimeZoneField(
+        default='UTC',
+        verbose_name=_('Cron Timezone'),
+        help_text=_(
+            'Timezone to Run the Cron Schedule on.  Default is UTC.'),
+    )
+
+ ## django_celery_beat_intervalschedule
+    intervalschedule의 옵션이자 데이터베이스 모델입니다.상대 시간으로 스케줄링합니다. 
+    
+    every = models.IntegerField(
+        null=False,
+        verbose_name=_('Number of Periods'),
+        help_text=_('Number of interval periods to wait before '
+                    'running the task again'),
+        validators=[MinValueValidator(1)],
+    )
+    period = models.CharField(
+        max_length=24, choices=PERIOD_CHOICES,
+        verbose_name=_('Interval Period'),
+        help_text=_('The type of period between task runs (Example: days)'),
+    )
+## period 종류 
+
+1. IntervalSchedule.DAYS  
+2. IntervalSchedule.HOURS  
+3. IntervalSchedule.MINUTES  
+4. IntervalSchedule.SECONDS  
+5. IntervalSchedule.MICROSECONDS  
 
  ## django_celery_beat_solarschedule
     경도와 위도로 위치를 정하고, 그 위치에서 해의 움직임에 대한 이벤트로 동작합니다
