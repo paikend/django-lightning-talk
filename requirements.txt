@@ -3,7 +3,7 @@ asgiref==3.2.7
 astroid==2.4.2
 billiard==3.6.3.0
 celery==4.4.5
-Django==3.0.7
+Django==3.0.14
 django-celery-beat==2.0.0
 django-timezone-field==4.0
 ephem==3.7.7.1
